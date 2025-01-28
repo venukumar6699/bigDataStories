@@ -1,0 +1,41 @@
+name: databricks-sync
+
+# Controls when the workflow will run
+on:
+  # Triggers the workflow on push for specific branches
+  push:
+    branches:
+      - classes
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment: common
+    env:
+      DATABRICKS_HOST: ${{ secrets.DATABRICKS_TARGET_URL }} # test workspace URL
+      DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_TARGET_TOKEN }} # test PAT token
+      DATABRICKS_REPO_ID: ${{ secrets.DATABRICKS_TARGET_REPO_ID }}
+      BRANCH: "classes"
+      
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
+      - name: Setup Python
+        uses: actions/setup-python@v3
+        with:
+          python-version: '3.9'
+
+      - name: Install databricks-sdk
+        run: pip install databricks-sdk  
+      - name: Update Databricks Repo Branch
+        run: |
+          if [[ "${{ github.ref_name }}" == "${{ env.BRANCH }}" ]]; then
+            python databricks/deploy/databricks_repo_sync.py \
+              --repo-id ${{ env.DATABRICKS_REPO_ID }} \
+              --branch ${{ env.BRANCH }} \
+              --host ${{ env.DATABRICKS_HOST }} \
+              --token ${{ env.DATABRICKS_TOKEN }}
+          else
+            echo "Unsupported branch: ${{ github.ref_name }}"
+            exit 1
+          fi
