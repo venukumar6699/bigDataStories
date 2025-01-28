@@ -16,7 +16,7 @@ jobs:
       DATABRICKS_HOST: ${{ secrets.DATABRICKS_TARGET_URL }} # test workspace URL
       DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_TARGET_TOKEN }} # test PAT token
       DATABRICKS_REPO_ID: ${{ secrets.DATABRICKS_TARGET_REPO_ID }}
-      BRANCH: "main"
+      BRANCH: "classes"
       
     steps:
       - name: Checkout Repository
