@@ -13,9 +13,9 @@ jobs:
     runs-on: ubuntu-latest
     environment: common
     env:
-      DATABRICKS_HOST: ${{ secrets.DEPLOYMENT_TARGET_URL }} # test workspace URL
-      DATABRICKS_TOKEN: ${{ secrets.DEPLOYMENT_TARGET_TOKEN }} # test PAT token
-      DATABRICKS_REPO_ID: ${{ secrets.DEPLOYMENT_TARGET_REPO_ID }}
+      DATABRICKS_HOST: ${{ secrets.DATABRICKS_TARGET_URL }} # test workspace URL
+      DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_TARGET_TOKEN }} # test PAT token
+      DATABRICKS_REPO_ID: ${{ secrets.DATABRICKS_TARGET_REPO_ID }}
       BRANCH: "main"
       
     steps:
