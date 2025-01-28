@@ -1,49 +1,42 @@
-#databricks notebook source
+# Databricks notebook source
 import os
+import argparse
 from databricks.sdk import WorkspaceClient
-from databricks.sdk.exceptions import ApiException
 
-def update_repo_branch(repo_id, branch):
+# COMMAND ----------
+
+def update_databricks_repo(repo_id, branch, host, token):
     """
-    Updates the branch of a Databricks repository.
+    Updates the branch of a Databricks repository in a specified workspace.
 
     Args:
         repo_id (int): The ID of the repository to update.
         branch (str): The name of the branch to set.
+        host (str): The Databricks workspace URL.
+        token (str): The Databricks personal access token (PAT).
     """
-    client = WorkspaceClient()
+    # Initialize the Databricks client with the specified host and token
+    client = WorkspaceClient(host=host, token=token)
 
     try:
-        print(f"Attempting to update repository with ID: {repo_id} to branch: {branch}")
+        print(f"Attempting to update repository with ID: {repo_id} to branch: {branch} in workspace: {host}")
+        # Update the repository to the specified branch
         client.repos.update(repo_id=repo_id, branch=branch)
-        print(f"Successfully updated repository {repo_id} to branch '{branch}'.")
-    except ApiException as e:
-        # Handle Databricks API errors
-        print(f"API Error occurred while updating repository: {e.error_code} - {e.message}")
-        if e.error_code == "RESOURCE_DOES_NOT_EXIST":
-            print(f"Repository with ID {repo_id} does not exist.")
-        elif e.error_code == "INVALID_PARAMETER_VALUE":
-            print(f"Invalid parameter provided: {e.message}")
-        else:
-            print("An unexpected API error occurred.")
+        print(f"Successfully updated repository {repo_id} to branch '{branch}' in workspace '{host}'.")
     except Exception as e:
         # Handle unexpected errors
         print(f"An unexpected error occurred: {str(e)}")
 
+
+# COMMAND ----------
+
 if __name__ == "__main__":
-    # Get environment variables
-    repo_id = os.getenv("REPO_ID")
-    branch = os.getenv("BRANCH")
+    # Parse arguments
+    parser = argparse.ArgumentParser(description="Update Databricks repository branch.")
+    parser.add_argument("--repo-id", type=int, required=True, help="The ID of the repository to update.")
+    parser.add_argument("--branch", type=str, required=True, help="The name of the branch to set.")
+    parser.add_argument("--host", type=str, required=True, help="The Databricks workspace URL.")
+    parser.add_argument("--token", type=str, required=True, help="The Databricks personal access token (PAT).")
+    args = parser.parse_args()
 
-    if not repo_id or not branch:
-        print("Environment variables REPO_ID and BRANCH are required.")
-        exit(1)
-
-    # Convert repo_id to integer
-    try:
-        repo_id = int(repo_id)
-    except ValueError:
-        print("REPO_ID must be an integer.")
-        exit(1)
-
-    update_repo_branch(repo_id, branch)
+    update_databricks_repo(args.repo_id, args.branch, args.host, args.token)
