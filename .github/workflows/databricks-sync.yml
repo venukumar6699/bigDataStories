@@ -29,11 +29,10 @@ jobs:
 
       - name: Install databricks-sdk
         run: pip install databricks-sdk  
-        
       - name: Update Databricks Repo Branch
         run: |
           if [[ "${{ github.ref_name }}" == "${{ env.BRANCH }}" ]]; then
-            python deploy/databricks_repo_sync.py \
+            python databricks/deploy/databricks_repo_sync.py \
               --repo-id ${{ env.DATABRICKS_REPO_ID }} \
               --branch ${{ env.BRANCH }} \
               --host ${{ env.DATABRICKS_HOST }} \
