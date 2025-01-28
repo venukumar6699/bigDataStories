@@ -32,7 +32,7 @@ jobs:
         
       - name: Update Databricks Repo Branch
         run: |
-          if [[ "${{ github.ref_name }}" == "${{ env.BRANCH_DEV }}" ]]; then
+          if [[ "${{ github.ref_name }}" == "${{ env.BRANCH }}" ]]; then
             python deploy/databricks_repo_sync.py \
               --repo-id ${{ env.DATABRICKS_REPO_ID }} \
               --branch ${{ env.BRANCH }} \
