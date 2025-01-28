@@ -6,8 +6,6 @@ on:
   push:
     branches:
       - classes
-      - main
-
 jobs:
   deploy:
     runs-on: ubuntu-latest
